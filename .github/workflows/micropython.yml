@@ -116,24 +116,28 @@ jobs:
         source $BUILD_TOOLS
         cmake_build
 
-    - name: "Py_Decl: Verify UF2"
+    - name: "Py_Decl: Verify .uf2"
       shell: bash
       run: |
         python3 py_decl/py_decl.py --to-json --verify build-${{ matrix.name }}/${{ env.RELEASE_FILE }}.uf2
 
-    - name: "dir2uf2: Append filesystem to UF2"
+    - name: "dir2uf2: Append filesystem to .uf2"
       shell: bash
       run: |
         python3 -m pip install littlefs-python==0.12.0
         ./dir2uf2/dir2uf2 --fs-compact --append-to build-${{ matrix.name }}/${{ env.RELEASE_FILE }}.uf2 --manifest ${{env.USER_FS_MANIFEST}} --filename with-filesystem.uf2 ${{env.USER_FS_SOURCE}}/
 
-    - name: Store .uf2 as artifact
+    - name: "Artifacts: Upload .uf2"
       uses: actions/upload-artifact@v4
       with:
         name: ${{ env.RELEASE_FILE }}.uf2
-        path: |
-          build-${{ matrix.name }}/${{ env.RELEASE_FILE }}.uf2
-          ${{ env.RELEASE_FILE }}-with-filesystem.uf2
+        path: build-${{ matrix.name }}/${{ env.RELEASE_FILE }}.uf2
+
+    - name: "Artifacts: Upload .uf2 with filesystem"
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.RELEASE_FILE }}-with-filesystem.uf2
+        path: ${{ env.RELEASE_FILE }}-with-filesystem.uf2
 
     - name: "Release: Upload .uf2"
       if: github.event_name == 'release'
