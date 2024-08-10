@@ -133,7 +133,7 @@ jobs:
         name: ${{ env.RELEASE_FILE }}.uf2
         path: |
           build-${{ matrix.name }}/${{ env.RELEASE_FILE }}.uf2
-          build-${{ matrix.name }}/${{ env.RELEASE_FILE }}-with-filesystem.uf2
+          ${{ env.RELEASE_FILE }}-with-filesystem.uf2
 
     - name: "Release: Upload .uf2"
       if: github.event_name == 'release'
@@ -141,7 +141,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        asset_path: build-${{ matrix.name }}/firmware.uf2
+        asset_path: build-${{ matrix.name }}/${{ env.RELEASE_FILE }}.uf2
         upload_url: ${{ github.event.release.upload_url }}
         asset_name: ${{ env.RELEASE_FILE }}.uf2
         asset_content_type: application/octet-stream
@@ -152,7 +152,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        asset_path: build-${{ matrix.name }}/firmware-with-filesystem.uf2
+        asset_path: ${{ env.RELEASE_FILE }}-with-filesystem.uf2
         upload_url: ${{ github.event.release.upload_url }}
-        asset_name: ${{ env.RELEASE_FILE }}.uf2
+        asset_name: ${{ env.RELEASE_FILE }}-with-filesystem.uf2
         asset_content_type: application/octet-stream
