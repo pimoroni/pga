@@ -34,11 +34,14 @@ jobs:
       # MicroPython version will be contained in github.event.release.tag_name for releases
       RELEASE_FILE: ${{ matrix.name }}-${{ github.event.release.tag_name || github.sha }}-micropython
       PIMORONI_PICO_DIR: "${{ github.workspace }}/pimoroni-pico"
-      MICROPY_BOARD_DIR: "${{ github.workspace }}/src-${{ github.sha }}/${{ matrix.BOARD }}"
       USER_C_MODULES: "${{ github.workspace }}/src-${{ github.sha }}/modules/${{ matrix.modules }}.cmake"
+      USER_FS_MANIFEST: "${{ github.workspace }}/src-${{ github.sha }}/modules/${{ matrix.modules }}.txt"
+      USER_FS_SOURCE: "${{ github.workspace }}/src-${{ github.sha }}/modules/littlefs"
       TAG_OR_SHA: ${{ github.event.release.tag_name || github.sha }}
       MICROPY_BOARD: ${{ matrix.board }}
       MICROPY_BOARD_VARIANT: ${{ matrix.variant }}
+      MICROPY_BOARD_DIR: "${{ github.workspace }}/src-${{ github.sha }}/${{ matrix.BOARD }}"
+      MICROPY_FROZEN_MANIFEST: "${{ github.workspace }}/src-${{ github.sha }}/modules/${{ matrix.modules }}.py"
       BOARD_NAME: ${{ matrix.name }}
       BUILD_TOOLS: src-${{ github.sha }}/ci/micropython.sh
 
@@ -81,12 +84,19 @@ jobs:
         source $BUILD_TOOLS
         micropython_clone
 
-    - name: "Py_Decl: Checkout py_decl"
+    - name: "Py_Decl: Checkout"
       uses: actions/checkout@v4
       with:
         repository: gadgetoid/py_decl
         ref: v0.0.2
         path: py_decl
+        
+    - name: "dir2uf2: Checkout"
+      uses: actions/checkout@v4
+      with:
+        repository: gadgetoid/dir2uf2
+        ref: v0.0.7
+        path: dir2uf2
 
     - name: "MicroPython: Build MPY Cross"
       run: |
@@ -110,6 +120,12 @@ jobs:
       shell: bash
       run: |
         python3 py_decl/py_decl.py --to-json --verify build-${{ matrix.name }}/${{ env.RELEASE_FILE }}.uf2
+
+    - name: "dir2uf2: Append filesystem to UF2"
+      shell: bash
+      run: |
+        python3 -m pip install littlefs-python==0.12.0
+        ./dir2uf2/dir2uf2 --fs-compact --append-to build-${{ matrix.name }}/${{ env.RELEASE_FILE }}.uf2 --manifest ${{env.USER_FS_MANIFEST}} --filename with-filesystem.uf2 ${{env.USER_FS_SOURCE}}/
 
     - name: Store .uf2 as artifact
       uses: actions/upload-artifact@v4
