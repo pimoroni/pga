@@ -14,3 +14,6 @@ should automatically handle building MicroPython for you.
 * modules/c/example - An example MicroPython C++ module, demonstrating C class bindings
 * modules/py_frozen - Python files intended to be frozen into the firmware
 * modules/py_littlefs - Python files intended to be visible/editable in the LittleFS user filesystem
+* modules/default.py - The MicroPython manifest file, for specifying frozen libs
+* modules/default.txt - The dir2uf2 LittleFS manifest file, for specifying included files
+* modules/default.cmake - The MicroPython USER_C_MODULES file, for specifying included C/C++ modules
