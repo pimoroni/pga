@@ -16,8 +16,11 @@ set(CMAKE_CXX_STANDARD 17)
 
 include(c/example/micropython)
 
-# include(micropython-common)
-# enable_ulab()
+include(micropython-common)
+
+if(PICO_BOARD STREQUAL "pga2350")
+enable_ulab()
+endif()
 
 # C++ Magic Memory
 # include(cppmem/micropython)
