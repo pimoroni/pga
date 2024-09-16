@@ -1,0 +1,25 @@
+name: Python Linting
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    name: Python Linting
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install Python Deps
+      run: python3 -m pip install ruff
+
+    - name: Lint Frozen Modules
+      shell: bash
+      run: |
+        python3 -m ruff check --output-format=full --ignore E501 modules/py_frozen
+
+    - name: Lint Examples
+      shell: bash
+      run: |
+        python3 -m ruff check --output-format=full --ignore E501 modules/py_littlefs
