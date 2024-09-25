@@ -36,7 +36,7 @@ jobs:
       PIMORONI_PICO_DIR: "${{ github.workspace }}/pimoroni-pico"
       USER_C_MODULES: "${{ github.workspace }}/src-${{ github.sha }}/modules/${{ matrix.modules }}.cmake"
       USER_FS_MANIFEST: "${{ github.workspace }}/src-${{ github.sha }}/modules/${{ matrix.modules }}.txt"
-      USER_FS_SOURCE: "${{ github.workspace }}/src-${{ github.sha }}/modules/littlefs"
+      USER_FS_SOURCE: "${{ github.workspace }}/src-${{ github.sha }}/modules/py_littlefs"
       TAG_OR_SHA: ${{ github.event.release.tag_name || github.sha }}
       MICROPY_BOARD: ${{ matrix.board }}
       MICROPY_BOARD_VARIANT: ${{ matrix.variant }}
