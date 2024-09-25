@@ -125,7 +125,7 @@ jobs:
       shell: bash
       run: |
         python3 -m pip install littlefs-python==0.12.0
-        ./dir2uf2/dir2uf2 --fs-compact --sparse --append-to build-${{ matrix.name }}/${{ env.RELEASE_FILE }}.uf2 --manifest ${{env.USER_FS_MANIFEST}} --filename with-filesystem.uf2 ${{env.USER_FS_SOURCE}}/
+        ./dir2uf2/dir2uf2 --fs-compact --sparse --verbose --append-to build-${{ matrix.name }}/${{ env.RELEASE_FILE }}.uf2 --manifest ${{env.USER_FS_MANIFEST}} --filename with-filesystem.uf2 ${{env.USER_FS_SOURCE}}/
 
     - name: "Artifacts: Upload .uf2"
       uses: actions/upload-artifact@v4
