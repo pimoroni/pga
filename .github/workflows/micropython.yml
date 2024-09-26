@@ -36,7 +36,7 @@ jobs:
       PIMORONI_PICO_DIR: "${{ github.workspace }}/pimoroni-pico"
       USER_C_MODULES: "${{ github.workspace }}/src-${{ github.sha }}/modules/${{ matrix.modules }}.cmake"
       USER_FS_MANIFEST: "${{ github.workspace }}/src-${{ github.sha }}/modules/${{ matrix.modules }}.txt"
-      USER_FS_SOURCE: "${{ github.workspace }}/src-${{ github.sha }}/modules/littlefs"
+      USER_FS_SOURCE: "${{ github.workspace }}/src-${{ github.sha }}/modules/py_littlefs"
       TAG_OR_SHA: ${{ github.event.release.tag_name || github.sha }}
       MICROPY_BOARD: ${{ matrix.board }}
       MICROPY_BOARD_VARIANT: ${{ matrix.variant }}
@@ -88,14 +88,14 @@ jobs:
       uses: actions/checkout@v4
       with:
         repository: gadgetoid/py_decl
-        ref: v0.0.2
+        ref: v0.0.3
         path: py_decl
         
     - name: "dir2uf2: Checkout"
       uses: actions/checkout@v4
       with:
         repository: gadgetoid/dir2uf2
-        ref: v0.0.7
+        ref: v0.0.9
         path: dir2uf2
 
     - name: "MicroPython: Build MPY Cross"
@@ -125,7 +125,7 @@ jobs:
       shell: bash
       run: |
         python3 -m pip install littlefs-python==0.12.0
-        ./dir2uf2/dir2uf2 --fs-compact --append-to build-${{ matrix.name }}/${{ env.RELEASE_FILE }}.uf2 --manifest ${{env.USER_FS_MANIFEST}} --filename with-filesystem.uf2 ${{env.USER_FS_SOURCE}}/
+        ./dir2uf2/dir2uf2 --fs-compact --sparse --verbose --append-to build-${{ matrix.name }}/${{ env.RELEASE_FILE }}.uf2 --manifest ${{env.USER_FS_MANIFEST}} --filename with-filesystem.uf2 ${{env.USER_FS_SOURCE}}/
 
     - name: "Artifacts: Upload .uf2"
       uses: actions/upload-artifact@v4
